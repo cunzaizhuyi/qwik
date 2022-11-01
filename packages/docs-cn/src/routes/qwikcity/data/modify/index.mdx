@@ -4,9 +4,11 @@ contributors:
   - adamdbradley
 ---
 
-# Modify Data
+# 修改数据
 
-Endpoints can define a way to fetch data and they can also define HTTP verbs to modify data. These are `GET`, `POST`, `PUT`, `PATCH`, `DELETE`. We have already discussed the `GET` verb in the previous section. Each of these verbs has a corresponding `on___` method such as `onGet`, `onPost`, `onPut`, `onPatch`, and `onDelete`.
+Endpoints可以定义获取数据的方法，也可以定义 HTTP 动词来修改数据。
+它们是`GET`、`POST`、`PUT`、`PATCH`、`DELETE`。我们已经在上一节讨论了 `GET` 动词。
+这些动词中的每一个都有相应的 `on___` 方法，例如 `onGet`、`onPost`、`onPut`、`onPatch` 和 `onDelete`。
 
 ```typescript
 // File: src/routes/product/[skuId]/index.tsx
