@@ -7,9 +7,15 @@ contributors:
 
 # Endpoints and RESTful API
 
-Qwik City is able to create a RESTful API for your application using Endpoints. Endpoint routes are created the same as how you would create a "page", except the filename should end with `.ts` instead of `.tsx`. An `index.ts` in the `src/routes` directory is only for data, such as a `json` response, while an `index.tsx` is for an HTML page. There is no need to put the "endpoint" routes into a specific `api` directory within `src/routes`.
+Qwik City 能够使用 Endpoints 为您的应用程序创建 RESTful API。
+Endpoint路由的创建方式与创建“页面”的方式相同，只是文件名应以 `.ts` 而不是 `.tsx` 结尾。
+`src/routes` 目录中的 `index.ts` 仅用于数据，例如 `json` 响应，而 `index.tsx` 用于 HTML 页面。
+无需将“endpoint”路由放入 `src/routes` 中的特定 `api` 目录。
 
-Both "page" and "endpoints" are the same except for one difference: a page exports a `default component$()` to render HTML, whereas an endpoint exports only HTTP request and response handlers. To learn about defining a page component, you can [read more here](../../content/component/index.mdx). An endpoint route however, is used only for the purpose of responding with data.
+“page”和“endpoints”除了一个区别外都是相同的：页面导出`default component$()`以渲染 HTML，
+而endpoint仅导出 HTTP 请求和响应处理程序。
+要了解如何定义页面组件，您可以 [在此处阅读更多内容](../../content/component/index.mdx)。
+然而，endpoint路由仅用于响应数据的目的。
 
 ## Example API endpoint route
 
