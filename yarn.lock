@@ -279,6 +279,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@builder.io/qwik@npm:0.11.0":
+  version: 0.11.0
+  resolution: "@builder.io/qwik@npm:0.11.0"
+  bin:
+    qwik: qwik.cjs
+  checksum: 6420c368f5fbb19e9719ba558f2aee852c6721596e578a3dea27119494f1052e19cccc0c400d3cfe182a9f8a63fa3bf0b0f7863a85db9f9bd2d7ed9552b0148a
+  languageName: node
+  linkType: hard
+
 "@builder.io/sdk-qwik@npm:^0.0.26":
   version: 0.0.26
   resolution: "@builder.io/sdk-qwik@npm:0.0.26"

@@ -4,11 +4,11 @@ contributors:
   - adamdbradley
 ---
 
-# Redirects
+# 重定向
 
-Sometimes you want to redirect a user from the current page to another page.
+有时您希望将用户从当前页面重定向到另一个页面。
 
-Let's say a user tries to go to a dashboard page but has not logged in yet. We want them to be redirected to a login page so they can be authenticated.
+假设用户尝试访问仪表板页面但尚未登录。我们希望将它们重定向到登录页面，以便对其进行身份验证。
 
 ```typescript
 // File: src/routes/dashboard.js
@@ -30,18 +30,18 @@ export const onGet: RequestHandler<DashboardData> = async ({ request, response }
 };
 ```
 
-The `response.redirect()` function takes a URL and optionally a status code as the second argument.
+`response.redirect()` 函数将 URL作为第一个参数 和可选的状态码作为第二个参数。
 
 ```tsx
 throw response.redirect('/login', 301); // Moved Permanently
 ```
 
-[Common redirect status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages):
+[常见的重定向的状态码](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages):
 
-- `302`: Found. This response code means that the URI of requested resource has been changed temporarily. Further changes in the URI might be made in the future. Therefore, this same URI should be used by the client in future requests.
-- `307`: Temporary Redirect. The server sends this response to direct the client to get the requested resource at another URI with the same method that was used in the prior request. This has the same semantics as the 302 Found HTTP response code, with the exception that the user agent must not change the HTTP method used: if a POST was used in the first request, a POST must be used in the second request.
-- `308`: Permanent Redirect. This means that the resource is now permanently located at another URI, specified by the `Location` HTTP Response header. This has the same semantics as the 301 Moved Permanently HTTP response code, with the exception that the user agent must not change the HTTP method used: if a POST was used in the first request, a POST must be used in the second request.
+- `302`: Found. 此响应代码表示请求资源的 URI 已临时更改。将来可能会对 URI 进行进一步的更改。因此，客户端在以后的请求中应该使用相同的 URI。
+- `307`: Temporary Redirect. 服务器发送此响应以指示客户端使用先前请求中使用的相同方法从另一个 URI 获取请求的资源。这与 302 Found HTTP 响应代码具有相同的语义，但用户代理不得更改使用的 HTTP 方法：如果在第一个请求中使用了 POST，则必须在第二个请求中使用 POST。
+- `308`: Permanent Redirect. 这意味着资源现在永久位于另一个 URI，由 `Location` HTTP 响应标头指定。这与 301 Moved Permanently HTTP 响应代码具有相同的语义，但用户代理不得更改使用的 HTTP 方法：如果在第一个请求中使用 POST，则必须在第二个请求中使用 POST。
 
-If you do not provide a status code, Qwik City will default to a `302` Found status.
+如果您不提供状态代码，Qwik City 将默认为 `302` Found 状态。
 
-Read more about redirect status codes [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages).
+更多关于重定向状态码的信息参考[这里](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages).
