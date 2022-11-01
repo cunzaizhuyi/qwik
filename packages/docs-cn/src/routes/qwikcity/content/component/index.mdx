@@ -9,11 +9,11 @@ contributors:
   - nnelgxorz
 ---
 
-# Components
+# 组件
 
-Page content can be created using Qwik components. The component representing the content should be exported as a `default` export.
+可以使用 Qwik 组件创建页面内容。表示内容的组件应导出为`default`导出。
 
-Let's assume you have your routes set up like this:
+假设您的路由设置如下：
 
 ```
 src/
@@ -33,9 +33,9 @@ export default component$(() => {
 });
 ```
 
-## Importing other components
+## 导入其他组件
 
-You can build complex views by composing multiple components within each other. To do that import other components into your `index.tsx` file.
+您可以通过在彼此内部组合多个组件来构建复杂的视图。为此，将其他组件导入您的 `index.tsx` 文件
 
 ```
 src/
@@ -48,8 +48,12 @@ src/
             └── sub_component.tsx
 ```
 
-Inside `index.tsx` you can create a component that is exported as `default` export. Content is created by writing a template with [JSX](https://reactjs.org/docs/introducing-jsx.html)-Syntax. Every component-function returns the template that should be rendered on the screen. If you want to learn more about the component anatomy, please see [components documentation](../../../docs/components/overview/index.mdx).
-The following component will be rendered at `https://example.com/some/path` according to the directory-structure, we have set up above.
+在 `index.tsx` 中，您可以创建一个导出为 `default` 导出的组件。
+通过使用 [JSX](https://reactjs.org/docs/introducing-jsx.html)-语法 编写模板来创建内容。
+每个组件函数都返回应该在屏幕上渲染的模板。
+如果您想了解有关组件的更多信息，请参阅 [组件文档](.../../../docs/components/overview/index.mdx)。
+
+以下组件将根据我们在上面设置的目录结构在 `https://example.com/some/path` 处渲染。
 
 ```typescript
 // File: src/routes/some/path/index.tsx
