@@ -9,16 +9,16 @@ contributors:
   - nnelgxorz
 ---
 
-# Menu
+# 菜单
 
-Menus allow you to describe the site navigation structure in a simple declarative way. Menus come in two steps:
+菜单允许您以简单的声明方式描述站点导航结构。菜单分两步：
 
-1. Defining a `menu.md` file that contains the menu structure for the directory it's in.
-2. Using the `useContent()` function to retrieve the menu structure in a template for rendering. [Read more here](../../../qwikcity/api/use-content/index.mdx)
+1. 定义一个 `menu.md` 文件，文件内包含其所在目录的菜单结构。
+2. 使用 `useContent()` 函数获取菜单结构以（在某个模板）进行渲染。 [Read more here](../../../qwikcity/api/use-content/index.mdx)
 
-## File Structure
+## 文件结构
 
-First layout files as follows:
+首先假如文件目录如下：
 
 ```
 src/
@@ -30,18 +30,18 @@ src/
             └── index.tsx  # https://example.com/some/path
 ```
 
-Navigating to `https://example.com/some/path` activates:
+导航到 `https://example.com/some/path` 会激活:
 
-- `src/routes/some/path/index.tsx`: This component will be used for rendering the page content.
-- `src/routes/some/layout.tsx`: This layout will be used to provide content around the `src/routes/some/path/index.tsx`. Internally the layout can use `src/routes/some/menu.md` to render the menus.
-- `src/routes/some/menu.md`: This file will be used to declare the menu structure which will be rendered by `src/routes/some/layout.tsx`.
+- `src/routes/some/path/index.tsx`: 该组件将用于渲染页面内容。
+- `src/routes/some/layout.tsx`: 此布局将用于为`src/routes/some/path/index.tsx`提供内容。 在内部布局可以使用`src/routes/some/menu.md`来渲染菜单。
+- `src/routes/some/menu.md`: 该文件将用于声明 将由 `src/routes/some/layout.tsx` 渲染的 菜单结构。
 
-## Declaring Menu Structure
+## 声明菜单结构
 
-Use `menu.md` to declare the menu structure.
+使用 `menu.md` 声明菜单结构
 
-- Use the headings (`#`, `##`, etc..) to define menu depth
-- Use the bulleted list (`-`) to define menu items.
+- 使用标题（`#`, `##`等）来定义菜单深度
+- 使用项目符号列表 (`-`) 定义菜单项
 
 ```markdown
 <!-- File: src/routes/some/menu.md -->
@@ -57,11 +57,11 @@ Use `menu.md` to declare the menu structure.
 - [Basics](/docs/components/basics/index.mdx)
 ```
 
-## Retrieving Menu Structure
+## 获取菜单结构
 
-At runtime, any component can retrieve the menu with `useContent()` hook. The type returned is `ContentMenu`.
+在运行时，任何组件都可以使用 `useContent()` hook获取菜单。返回的类型是 `ContentMenu`。
 
-The example above will return:
+这个例子将返回:
 
 ```javascript
 {
@@ -89,9 +89,10 @@ The example above will return:
 }
 ```
 
-## Using `ContentMenu` in a layout
+## 在layout文件 使用 `ContentMenu`
 
-While `useContent()` can be invoked from any component that is part of the current route. It is typically used in a layout component (or a component used by layout) to render the menu. An example usage is shown here:
+尽管可以从属于当前路由的任何组件调用`useContent()`。
+但它通常用于布局组件（或布局使用的组件）中以渲染菜单。此处显示了一个示例用法：
 
 ```typescript
 export default component$(() => {
