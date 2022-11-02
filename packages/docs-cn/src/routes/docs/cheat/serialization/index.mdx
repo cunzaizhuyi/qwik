@@ -1,21 +1,23 @@
 ---
 title: Serialization & Serialization Boundaries
 contributors:
-  - fabien0102
-  - wuweiweiwu
-  - manucorporat
-  - adamdbradley
+- fabien0102
+- wuweiweiwu
+- manucorporat
+- adamdbradley
 ---
 
-# `$` Boundaries
+# `$` 边界
 
-## Rules
+## 规则
 
-- Only serializable data can cross a `$` boundary.
+- 只有可序列化的数据才能跨越 `$` 边界。
 
 ## Serialization Boundary
 
-A serialization boundary occurs whenever you cross a lexical scope of a function that is converted into lazy loadable form. It is always denoted by `$(...)` (or `____$(...)`) See example:
+每当您 跨越（转换为延迟加载形式的）函数的词法作用域 时，就会出现序列化边界。
+它总是用 `$(...)` （或 `____$(...)`）表示，
+看例子：
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -25,7 +27,7 @@ export const topLevel = Promise.resolve('nonserializable data');
 export const Greeter = component$(() => {
   // BEGIN component serialization boundary
 
-  // Referring to top level symbols that are exported is always allowed.
+  // 始终允许引用导出的top level symbols。
   console.log(topLevel); // OK
 
   const captureSerializable = 'serializable data';
@@ -36,8 +38,8 @@ export const Greeter = component$(() => {
       onClick$={() => {
         // BEGIN onClick serialization boundary
 
-        // Referring to top level symbols that are exported is always allowed,
-        // even if the value is non-serializable.
+        // 始终允许引用导出的top level symbols。
+        // 即使值是不可序列化的。
         console.log(topLevel); // OK
 
         // Capturing a non-top-level variable is allowed only if:
