@@ -7,26 +7,28 @@ contributors:
 
 # Qwikloader
 
-Qwik is designed for fine-grained lazy loading of your application. To achieve lazy-loading, Qwik requires a tiny piece of JavaScript to load at the beginning that knows how to download the rest of the application on an as-needed basis. We refer to that JavaScript as Qwikloader.
+Qwik 专为应用程序的细粒度延迟加载而设计。
+为了实现延迟加载，Qwik 需要在开始时加载一小段 JavaScript，它知道如何根据需要下载应用程序的其余部分。
+我们将该 JavaScript 称为 Qwikloader。
 
-Qwikloader is:
+Qwikloader 是:
 
-- small: about 1 kb minified.
-- fast: it executes in less than 5ms even on mobile devices. (Initial cost, not per event cost.)
+- 很小: 大约 1 kb。
+- 很快: 即使在移动设备上，它也可以在不到 5 毫秒的时间内执行。 （初始成本，而不是每次事件成本。）
 
-How is it delivered:
+它怎么被传输:
 
-- Because of its size, we recommend delivering Qwikloader as inlined `<script>` tag. This way, the browser does not have to pay for the cost of creating another connection to the server.
+- 由于它的大小，我们建议将 Qwikloader 作为内联的 `<script>` 标签提供。这样，浏览器就不必花费 创建另一个与服务器的连接 的成本。
 
-What is the purpose of Qwikloader:
+Qwikloader的目的:
 
-- register global browser events.
-- if an event occurs, search the DOM for the corresponding event attribute pointing to the QRL to lazy-load.
-- Lazy-load the event handler and execute it.
+- 注册全局浏览器事件。
+- 如果有事件发生, search the DOM for the corresponding event attribute pointing to the QRL to lazy-load.
+- 延迟加载事件处理程序并执行它。
 
-## How does it work
+## 它的工作原理
 
-Below you can find a simple HTML with Qwikloader and a button with associated behavior.
+您可以在下面找到一个带有 Qwikloader 的简单 HTML 和一个具有相关行为的按钮。
 
 ```html
 <html>
@@ -39,23 +41,25 @@ Below you can find a simple HTML with Qwikloader and a button with associated be
 </html>
 ```
 
-1. The browser downloads the HTML and executes the inlined Qwikloader script. The Qwikloader sets up global listeners for all browser events.
-2. The user clicks on the `<button>`. The browser generates a `click` event that bubbles up the DOM until the Qwikloader's global listener intercepts it.
-3. The Qwikloader retraces the event path and searches for `on:click` attribute on the elements.
-4. The Qwikloader uses the `on:click` and `q:base` attributes along with the `document.baseURI` to build a full URL for fetching the lazy-loaded handler. Assuming the original page was served up from `http://localhost/` the fetch URL becomes `http://localhost/build/myHandler.js`.
-5. Qwikloader retrieves the `clickHandler` symbol, exported from `http://localhost/build/myHandler.js` and invokes it.
+1. 浏览器下载 HTML 并执行内联的 Qwikloader 脚本。 Qwikloader 为所有浏览器事件设置全局监听器。
+2. 用户点击`<button>`。浏览器生成一个 `click` 事件，该事件使 DOM 冒泡，直到 Qwikloader 的全局侦听器拦截它。
+3. Qwikloader 追溯事件路径并在元素上搜索 `on:click` 属性。
+4. Qwikloader 使用 `on:click` 和 `q:base` 属性以及 `document.baseURI` 来构建用于获取延迟加载处理程序的完整 URL。
+假设原始页面是从 `http:localhost` 提供的，那么获取 URL 将变为 `http:localhost/build/myHandler.js`。
+5. Qwikloader 检索从 `http:localhost/build/myHandler.js` 导出的 `clickHandler` symbol并调用它。
 
 
-## Events and qwikloader
+## Events 和 qwikloader
 
-The registration of the listener creates two problems in the context of the SSR/SSG that Qwik needs to solve. (For context, remember that Qwik is resumable, that is, it can continue executing the application from where the server paused without being forced to download and execute code eagerly.)
+监听器的注册在 SSR/SSG 的上下文中产生了 Qwik 需要解决的两个问题。
+（关于上下文，请记住 Qwik 是可恢复的，也就是说，它可以从服务器暂停的地方继续执行应用程序，而不会被迫急切地下载和执行代码。）
 
-1. **listener location**: Qwik needs to know where the events are in the HTML which came from the SSR/SSG.
-2. **listener code**: Qwik needs to know what code should run if the event is triggered.
+1. **listener location**: Qwik 需要知道事件在来自 SSR/SSG 的 HTML 中的位置。
+2. **listener code**: 如果事件被触发，Qwik 需要知道应该运行什么代码。
 
-Without the above information, Qwik would be forced to download the component template and execute it so that the listener location and closure can be recovered. This process is known as hydration, and Qwik explicitly tries to avoid hydration.
+如果没有上述信息，Qwik 将被迫下载组件模板并执行它，以便恢复侦听器位置和关闭。这个过程被称为hydration，Qwik 明确地试图避免hydration。
 
-Qwik serializes the event listeners into DOM in the form of [QRLs](../qrl/index.mdx). For example:
+Qwik 以 [QRLs](../qrl/index.mdx) 的形式将事件监听器序列化为 DOM。例如：
 
 ```html
 <div>
@@ -63,5 +67,7 @@ Qwik serializes the event listeners into DOM in the form of [QRLs](../qrl/index.
 </div>
 ```
 
-The critical thing to notice is that Qwik generated an `on:click` attribute, containing the value `./chunk-a.js#Counter_button_onClick[0]`. In the above example the `on:click` attribute solves the listener location problem, and the attribute value solves the listener code location problem. By serializing the listeners into the HTML Qwik-applications do not need to perform hydration on startup.
+需要注意的关键是 Qwik 生成了一个 `on:click` 属性，其中包含值 `.chunk-a.jsCounter_button_onClick[0]`。
+在上面的例子中，`on:click` 属性解决了监听器定位问题，属性值解决了监听器代码定位问题。
+通过将侦听器序列化为 HTML，Qwik 应用程序不需要在启动时执行hydration。
 
