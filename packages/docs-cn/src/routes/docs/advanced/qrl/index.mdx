@@ -8,41 +8,42 @@ contributors:
 
 # QRL
 
-QRL (Qwik URL) is a particular form of URL that Qwik uses to lazy load content.
+QRL（Qwik URL）是 Qwik 用于延迟加载内容的一种特殊形式的 URL。
 
-QRLs are:
+QRLs 是:
 
-- Specially formatted URLs that are left as attributes in the HTML to tell Qwik where the handlers for the code should be loaded from.
-- URLs that point to JavaScript chunk to be lazy-loaded.
-- Contain symbol name which needs to be retrieved from the chunk
-- May contain lexically scoped object references. (Captured variables from closures.)
+- 在 HTML 中作为属性保留的特殊格式的 URL，用于告诉 Qwik 应从何处加载代码的处理程序。
+- 指向要延迟加载的 JavaScript chunk的 URL。
+- 包含需要从chunk中获取的 symbol名
+- 可能包含词法范围的对象引用。 （从闭包中捕获的变量。）
 - If relative use `q:base` for resolution.
 
-## QRL Encoding
+## QRL 编码
 
 ```
 ./path/to/chunk.js#SymbolName
 ```
 
-In its simplest form, the QRL contains a `./path/to/chunk.js`, a URL that the browser can use to lazy-load a resource, and a `SymbolName` to retrieve from the lazy-loaded chunk.
+在最简单的形式中，QRL 包含一个“./path/to/chunk.js”（一个浏览器可以用来延迟加载资源的 URL），以及一个可以从延迟加载的chunk中获取的“SymbolName”。
 
-Qwik uses `q:base` to resolve a QRL into an absolute URL if the URL is relative. (If no `q:base` attribute is present, then `document.baseURI` is used as a base.)
+如果 URL 是相对的，Qwik 使用 `q:base` 将 QRL 解析为绝对 URL。
+（如果不存在 `q:base` 属性，则使用 `document.baseURI` 作为base。）
 
 ## Encoding lexically scoped captured variables
 
-QRLs can also restore lexically scoped variables. In that case, the variables are encoded in the QRL at the end in the form of an array of indexes into the `q:obj` attribute.
+QRL 还可以恢复词法作用域的变量。在这种情况下，变量在 QRL 的末尾以索引数组的形式编码，而变量是放在 `q:obj` 属性中的。
 
 ```
 ./path/to/chunk.js#SymbolName[0,2]
 ```
 
-The array is used by `useLexicalScope()` to restore the variables.
+`useLexicalScope()` 使用该数组来恢复变量。
 
-### Example
+### 示例
 
-Let's look at an example of how all of the pieces of the QRL tie together.
+让我们看一个示例，说明 QRL 的所有部分是如何联系在一起的。
 
-The developer writes code for a simple component.
+开发人员为一个简单的组件编写代码。
 
 ```tsx
 export const Counter = component$((props: { step: number }) => {
@@ -52,7 +53,7 @@ export const Counter = component$((props: { step: number }) => {
 });
 ```
 
-The optimizer breaks above code into pieces like so:
+optimizer将上面的代码分解成这样的片段：
 
 ```tsx
 const Counter = component(qrl('./chunk-a.js', 'Counter_onMount'));
@@ -89,9 +90,9 @@ const Counter_onClick = () => {
 
 ### Rendered HTML
 
-After the above code gets executed, it produces this HTML.
+执行上述代码后，它会生成此 HTML。
 
-Assume: `http://localhost/index.html`
+假如是: `http://localhost/index.html`
 
 ```html
 <html>
@@ -107,12 +108,13 @@ Assume: `http://localhost/index.html`
 </html>
 ```
 
-The main thing to note is the `on:click` attribute. This attribute gets read by the Qwikloader when the user clicks on the button.
+主要需要注意的是 `on:click` 属性。当用户单击按钮时，Qwikloader 会读取此属性。
 
-1. HTML is loaded in the browser, and Qwikloader registers a global `click` listener. No other JavaScript is loaded/executed at this point.
-2. User clicks on the `<button>`. This fires a `click` event which bubbles up and is handled by the Qwikloader.
-3. Qwikloader retraces the event bubble path and looks for `on:click` attribute, which it finds on `<button>`.
-4. Qwikloader now tries to load the corresponding chunk. To do that, the Qwikloader needs to resolve the relative path of `./chunk-c.js`. It uses these values to build an absolute path starting at `<button>` and walking towards the document.
+1. HTML 在浏览器中加载，Qwikloader 注册一个全局的“click”监听器。此时没有加载执行其他 JavaScript。
+2. 用户点击`<button>`。这会触发一个“click”事件，该事件会冒泡并由 Qwikloader 处理。
+3. Qwikloader 追溯事件气泡路径，在 `<button>` 上找到 `on:click` 属性。
+4. Qwikloader 现在尝试加载相应的块。为此，Qwikloader 需要解析 `.chunk-c.js` 的相对路径。
+It uses these values to build an absolute path starting at `<button>` and walking towards the document.
    - `on:click="./chunk-c.js#Counter_onClick[0,2]"`
    - `<body q:base="/build/">`
    - `document.baseURI = "http://localhost/index.html"`
@@ -136,20 +138,21 @@ The main thing to note is the `on:click` attribute. This attribute gets read by 
 
 # Why not just dynamic `import()`?
 
-Browsers already have dynamic import mechanisms available from `import()`. Why not use that instead of inventing a new QRL format?
+浏览器已经有 `import()` 这样的动态导入机制。为什么不使用它而是发明一种新的 QRL 格式呢？
 
-There are several reasons:
+有几个原因:
 
-1. For Qwik to work, the QRLs need to be serialized into HTML. This is problematic for dynamic `import()` because there is no easy way to retrieve the relative URL from the `import('./some-path.js')` so that it can be placed in the HTML.
+1. For Qwik to work, the QRLs need to be serialized into HTML.
+This is problematic for dynamic `import()` because there is no easy way
+to retrieve the relative URL from the `import('./some-path.js')` so that it can be placed in the HTML.
 2. Dynamic imports deal with chunks, but they have no mechanism to refer to a specific symbol in the chunk.
 3. Dynamic imports have relative paths to the file which imported it. This is a problem because when the relative path is placed in HTML, it loses the context which defines relative to what. When the framework reads the path from HTML and tries to import it as `import(element.getAttribute('on:click'))`, the framework will become the context for relative path resolution. This is wrong as the original context before serialization to the HTML was different.
 4. Finally, QRLs encode information about the lexically scoped variables captured in the closure and need to be restored.
 5. Requires that the developer writes `import('./file-a.js')`, which means the developer is in charge of deciding where the lazy-loaded boundaries are. This limits our ability of the tooling to move code around in an automated way.
 
-
-Because of the above differences, Qwik introduces QRLs as a mechanism for lazy load closures into a Qwik application.
+由于上述差异，Qwik 将 QRL 作为延迟加载闭包的机制 引入Qwik应用。
 
 # See Also
 
-- `qrl`: API used to create QRLs.
-- `qImport`: API used to lazy load symbols from QRLs.
+- `qrl`: 用于创建 QRL 的 API
+- `qImport`: 用于从 QRL 延迟加载symbol的 API。
