@@ -9,9 +9,11 @@ contributors:
 
 # useResource$()
 
-This method allows you to generate computed values asynchronously. The asynchronous function passed as its first argument will be called when the component is mounted and when the tracked values change.
+此方法允许您异步生成计算值(计算属性)。
+它的第一个参数是一个异步函数，该函数将在 组件mounted 和 跟踪值变化 的时候被调用。
 
-Just like all the `use-` methods, it must be called within the context of `component$()`, and all the [hook rules apply](../../../docs/components/lifecycle/index.mdx#rules).
+和所有`use-`方法一样，它必须在 `component()` 的上下文中调用，
+and all the [hook rules apply](../../../docs/components/lifecycle/index.mdx#rules).
 
 ```tsx
 const store = useStore({
@@ -34,19 +36,21 @@ const resource = useResource$(async (ctx) => {
 });
 ```
 
-As we see in the example above, `useResouce$()` returns a `ResourceReturn<T>` object that works like a glorified, fully reactive promise, containing the data and the resource state.
+正如我们在上面的示例中看到的，`useResouce()` 返回一个 `ResourceReturn<T>` 对象，
+它的工作方式类似于一个美化的、完全反应式的promise，包含数据和资源状态。
 
-The state `resource.state` can be one of the following strings:
+`resource.state`可能是下面几个字符串中的一个：
 
-- `'pending'` - the data is not yet available.
-- `'resolved'` - the data is available.
-- `'rejected'` - the data is not available due to an error or timeout.
+- `'pending'` - 数据还不可用
+- `'resolved'` - 数据已可用
+- `'rejected'` - 由于错误或超时原因，数据不可用
 
-The callback passed to `useResource$()` runs right after the `useMount$()` and `useWatch$()` callbacks complete. Please refer to the [Lifecycle](../lifecycle/index.mdx) section for more details.
+传给`useResource$()`的回调函数在`useMount$()` 和 `useWatch$()`的回调函数 完成执行后立马调用。
+更多细节请参考[Lifecycle](../lifecycle/index.mdx) 部分。
 
 ## `<Resource>`
 
-`<Resource>` is a component that renders its children when the resource is resolved, and renders a fallback when the resource is pending or rejected.
+`<Resource>` 是一个组件，它在数据resolved时渲染子元素，并在数据pending或rejected时渲染兜底UI。
 
 ```tsx
   <Resource
@@ -59,11 +63,12 @@ The callback passed to `useResource$()` runs right after the `useMount$()` and `
   />
 ```
 
-Notice that `<Resource>` is not necessary to use `useResource$()`. It is just a convenient way to render the resource state.
+请注意，使用 `useResource()` 时不是必须也要使用`<Resource>`的。
+`<Resource>`只是渲染数据的一种便捷方式。
 
-### Example using `useResource$()` with `<Resource>`
+### 使用 `useResource$()` 和 `<Resource>` 的例子
 
-Example showing how `useResource` is used to perform a fetch call to request the weather whenever the input city name changes.
+示例展示了 每次在输入的城市名称改变时，使用`useResource`执行fetch调用以请求天气数据。
 
 ```tsx
 export const Cmp = component$(() => {
@@ -98,7 +103,7 @@ export const Cmp = component$(() => {
 ```
 
 
-### Example without `<Resource>`
+### 不使用 `<Resource>` 的例子
 
 ```tsx
 export const Cmp = component$(() => {
@@ -131,6 +136,6 @@ export const Cmp = component$(() => {
 });
 ```
 
-> **NOTE**
-> We strongly recommend to use `<Resource/>` whenever possible, since this component will more efficiently avoid rerenders and it is also optimized for SSR.
+> **注意**
+> 我们强烈建议尽可能使用 `<Resource>`，因为该组件将更有效地避免重新渲染，并且还针对 SSR 进行了优化。
 
