@@ -9,19 +9,21 @@ contributors:
 
 # Context
 
-Qwik provides a context API, very similar to React's functional `useContext()`. In fact, Qwik's context API is the most efficient way to pass data down, reducing overhead, generating less code, and allowing Qwik to treeshake unused data more heavily.
+Qwik 提供了一个 context API，非常类似于 React 的`useContext()`函数。
+事实上，Qwik 的context API 是向下传递数据的最有效方式，减少开销，生成更少的代码，并允许 Qwik 更重地treeshake未使用的数据。
 
-Qwik's context API is made of 3 methods, importable from `@builder.io/qwik`:
+Qwik 的 context API 由 3 个方法组成，可从 `@builder.ioqwik` 导入：
 
 - `createContext(contextName: string): Context`
 - `useContextProvider(ctx: Context, value: VALUE): Context`
 - `useContext(ctx: Context): VALUE`
 
-### Example
+### 例子
 
-This example is made of two components, the `Parent` and the `Child`. The parent component creates some new state and assigns it to a context, allowing any descendent component to get a reference to the "state".
+这个例子由两个组件组成，`Parent` 和 `Child`。父组件创建一些新state并将其赋值给context，允许任何后代组件获取对“state”的引用。
 
-At the same time, the parent component is rendering `<div>Count: {state.count}</div>`, creating a reactive subscription that will re-render when the Child changes the value in the click handler: `<button onClick$={() => state.count++}>`.
+同时，父组件正在渲染 `<div>Count: {state.count}<div>`，创建一个响应式订阅，
+当 Child 更改 click 处理程序`<button onClick ={() => state.count++}>`中的值时将重新渲染：。
 
 ```tsx
 import {
@@ -62,27 +64,30 @@ export const Child = component$(() => {
 });
 ```
 
-Let's dig into every API involved:
+让我们深入研究涉及的每个 API：
 
 ## API
 
 ### `createContext()`
 
-This method takes a string that gives the context unique name, if your application uses a lot of different context or you are writing a component library, we recommend to follow a name convention that avoids conflicts, such as:
+此方法采用一个字符串作为参数，该字符串为context提供唯一名称，如果您的应用程序使用许多不同的context或您正在编写组件库，
+我们建议遵循避免冲突的命名约定，例如：
 
 ```tsx
 export const QwikCityContext = createContext('io.builder.qwik.city');
 ```
 
-Notice that the value returned by `createContext()` does not hold any state, and it's immutable. It's only used to describe the name and type of the context, like an address or an identifier.
+请注意，`createContext()` 返回的值不包含任何状态，并且它是immutable的。它仅用于描述context的名称和类型，像一个地址或标识符。
 
-Because it does not hold any state, it's ok to call it and make it a singleton, exported in some shared module.
+因为它不保存任何状态，所以可以调用它并使其成为单例，导出到某些共享模块中。
 
 ### `useContextProvider()`
 
-Like all use- methods, it can only be called at the root of `component$()` (not inside branches). This method is called by some higher level component and it's what assigns (provides) a value to the context. The provided value will not be globally available across the whole render tree, but only to descendant components in the tree.
+像所有 `use-` 方法一样，它只能在 `component()` 的根层级中调用（不能在分支内部调用）。
+此方法由一些更高级别的组件调用，它为context分配（提供）一个值。
+提供的值不会在整个渲染树中全局可用，而仅对树中的后代组件可用。
 
-The value passed to `useContextProvider()` can be any primitive, object (including from useStore), or array that contains serializable values.
+传递给 `useContextProvider()` 的值可以是任何基本类型、对象（包括来自 useStore）或包含可序列化值的数组。
 
 ```tsx
 export const Parent = component$(() => {
@@ -105,11 +110,11 @@ export const Parent = component$(() => {
 });
 ```
 
-Let's see how `Children` can consume the values:
+让我们看看 `Children` 组件如何使用这些值：
 
 ### `useContext()`
 
-Again, like all use- methods, they are only usable at the root of a `component$()`. This methods allows us to get the **provided** value to a named context.
+同样，像所有使用方法一样，它们只能在 `component()` 的根目录下使用。此方法允许我们将 提供的值 获取到 命名context。
 
 ```tsx
 export const Children = component$(() => {
@@ -127,7 +132,7 @@ export const Children = component$(() => {
 
 ## Typed contexts
 
-When a context is created using `createContext()`, a type can be provided. In fact, it's highly recommended to do so, in order to reduce errors and typos.
+当使用`createContext()`创建上下文时，可以提供一个类型。事实上，强烈建议这样做，以减少错误和拼写错误。
 
 ```tsx
 export interface SharedState {
@@ -136,9 +141,9 @@ export interface SharedState {
 export const MyContext = createContext<SharedState>('my-context');
 ```
 
-This way, when using `MyContext` in `useContextProvider()` and `useContext()`, the provided value will have the `SharedState` type.
+这样，当在 `useContextProvider()` 和 `useContext()` 中使用 `MyContext` 时，提供的值将具有 `SharedState` 类型。
 
-Let's see a working example:
+看个例子:
 
 ```tsx
 import {
