@@ -9,9 +9,9 @@ contributors:
 
 # Content projection
 
-Content projection allows a component to treat the JSX children of the component as a form of input and project these children into the component's JSX.
+内容投影允许组件将组件的 JSX children视为一种输入形式，并将这些children投射到组件的 JSX 中。
 
-An example of a collapsible component which conditionally projects it's content.
+有条件地投射其内容的可折叠组件的示例。
 
 ```tsx
 export const Collapsible = component$(() => {
@@ -28,7 +28,7 @@ export const Collapsible = component$(() => {
 });
 ```
 
-The above component can be used from a parent component like so:
+上面的组件可以像这样从父组件中使用：
 
 ```tsx
 export const MyApp = component$(() => {
@@ -41,11 +41,11 @@ export const MyApp = component$(() => {
 });
 ```
 
-The `Collapsible` component will always display the title, but the body of the text will only display if `store.isOpen` is `true`.
+`Collapsible` 组件将始终显示title，但只有在 `store.isOpen` 为 `true` 时才会显示文本正文。
 
-## Rendered output
+## 渲染输出
 
-The above example would render into this HTML if `isOpen===true`:
+如果 `isOpen===true`，上面的示例将渲染为这个 HTML ：
 
 ```html
 <my-app>
@@ -60,11 +60,12 @@ The above example would render into this HTML if `isOpen===true`:
 </my-app>
 ```
 
-## Slots
+## 插槽（Slots）
 
-Qwik uses slots as a way of connecting content from the parent component to the child projection.
+Qwik 使用插槽作为将内容从父组件投递到子组件的一种方式。
 
-The parent component uses `q:slot` attribute to identify the source of projection and `<Slot>` element to identify the destination of the projection. Unnamed (or unwrapped) content is assumed to have `q:slot=""` attribute
+父组件使用 `q:slot` 属性来标识projection的来源。子组件的 `<Slot>` 元素来标识projection的目的地。
+假定未命名（或未包装）的内容具有 `q:slot=""` 属性。
 
 ```tsx
 export const Project = component$(() => {
@@ -102,9 +103,9 @@ Results in:
 </my-app>
 ```
 
-### Naming slots
+### 具名插槽（Naming slots）
 
-Use `q:slot` attributes to name slots.
+使用 `q:slot` 属性来命名插槽。
 
 ```tsx
 export const Project = component$(() => {
@@ -130,7 +131,7 @@ export const MyApp = component$(() => {
 });
 ```
 
-Results in:
+渲染结果:
 
 ```html
 <my-app>
@@ -149,14 +150,14 @@ Results in:
 </my-app>
 ```
 
-Notice that:
+注意事项:
 
-- `name=""` attribute is the same behavior as no attribute or no wrapping element.
-- Multiple `q:slot="title"` attributes coalesce items together in the content projection.
+- `name=""` 属性与没有属性或没有包装元素的行为相同。
+- 多个 `q:slot="title"` 属性在内容投递中会将items合并在一起。
 
-### Not projecting content
+### 没有插槽时（Not projecting content）
 
-Qwik keeps all content around, even if not projected. This is because the content could be projected in the future.
+Qwik 保留所有内容，即使没有插槽。这是因为内容可以在未来被投递。
 
 ```tsx
 export const Project = component$(() => {
@@ -168,7 +169,7 @@ export const MyApp = component$(() => {
 });
 ```
 
-Results in:
+渲染结果:
 
 ```html
 <my-app>
@@ -179,11 +180,13 @@ Results in:
 </my-app>
 ```
 
-Notice that the un-projected content is moved into inert `<q:template>`. This is done just in case the `Project` component re-renders and inserts a `<Slot>`. In that case, we don't want to re-render the parent component. The rendering of the two components needs to stay independent.
+请注意，unwrapped text被移动到惰性 `<q:template>` 中。
+这样做是为了以防 `Project` 组件重新渲染并插入 `<Slot>`。
+在这种情况下，我们不想重新渲染父组件。两个组件的渲染需要保持独立。
 
-### Default slot content
+### 默认插槽内容
 
-It is possible to insert default slot content if the parent component does not provide a value.
+如果父组件不提供值，则可以插入默认插槽内容。
 
 ```tsx
 export const Project = component$(() => {
@@ -200,7 +203,7 @@ export const MyApp = component$(() => {
 });
 ```
 
-Results in:
+渲染结果:
 
 ```html
 <my-app>
@@ -216,11 +219,15 @@ Results in:
 </my-app>
 ```
 
-Notice that default content can be included in the `<Slot>..default content</Slot>`. This content will always get inserted into the resulting HTML output wrapped in `<q:slot-default/>`. The visibility of the `<q:slot-default/>` is controlled by the `has-content` attribute. See the CSS section for details.
+请注意，默认内容可以写在 `<Slot>..default content<Slot>` 中。
+此内容将始终插入到 结果HTML 的  `<q:slot-default>` 中。
+`<q:slot-default>` 的可见性由 `has-content` 属性控制。有关详细信息，请参阅 CSS 部分。
 
 ## CSS
 
-On order for Qwik to be able to render components independently, it must be able to read the rules of projection from the HTML. This is achieved with the `<q:slot>` element, the `<q:slot-default/>` element and the `q:slot` attribute. The extra elements are necessary to achieve this. To make the elements act inert, Qwik adds the following CSS to the `<style>` tag.
+为了让 Qwik 能够独立渲染组件，它必须能够从 HTML 中读取rules of projection。
+这是通过 `<q:slot>` 元素、`<q:slot-default>` 元素和 `q:slot` 属性实现的。
+实现这一点还需要额外的元素。为了使元素保持惰性，Qwik 将以下 CSS 添加到 `<style>` 标记中。
 
 ```html
 <style>
@@ -237,7 +244,7 @@ On order for Qwik to be able to render components independently, it must be able
 
 ## Invalid projection
 
-The `q:slot` attribute must be a direct child of a component.
+`q:slot` 属性必须是组件的直接子元素（子辈元素）。
 
 ```tsx
 export const Project = component$(() => { ... })
@@ -256,20 +263,26 @@ export const MyApp = component$(() => {
 
 ## Projection vs `children`
 
-All frameworks need a way for a component to wrap its complex content in a conditional way. This problem is solved in many different ways, but there are two predominant approaches:
+所有框架都需要一种方法来让组件以有条件的方式包装其复杂的内容。
+这个问题可以通过许多不同的方式解决，但主要有两种方法：
 
 - **projection**: Projection is a declarative way of describing how the content gets from the parent template to where it needs to be projected.
 - **`children`**: `children` refers to vDOM approaches that treat content just like another input.
 
-The two approaches can best be described as declarative vs imperative. They both come with their set of advantages and disadvantages.
+最好将这两种方法描述为声明式与命令式。它们都有各自的优点和缺点。
 
-Qwik uses the declarative projection approach. The reason for this is that Qwik needs to be able to render parent/children components independently from each other. With an imperative (`children`) approach, the child component can modify the `children` in countless ways. If a child component relied on `children`, it would be forced to re-render whenever a parent component would re-render to reapply the imperative transformation to the `children`. The extra rendering goes explicitly against the goals of Qwik components rendering in isolation.
+Qwik 使用声明式projection方法。这样做的原因是 Qwik 需要能够相互独立地渲染父子组件。
+使用命令式（`children`）方法，子组件可以以无数种方式修改`children`。
+如果子组件依赖于 `children`，则每当父组件重新渲染以将命令式转换重新应用到 `children` 时，子组件将被迫重新渲染。
+额外的渲染明显违背了 Qwik 组件单独渲染的目标。
 
-For example, let's go back to our `Collapsible` example from above:
+例如，让我们回到上面的 `Collapsible` 示例：
 
-- The parent needs to be able to change the title and the text without forcing the `Collapsible` component to re-render. Qwik needs to be able to redistribute the changes to the `MyApp` template without affecting the `Collapsible` component.
-- The child component needs to change what is projected without having the parent component re-render. In our case, `Collapsible` should be able to show/hide the default `q:slot` without downloading and re-rendering the `MyApp` component.
+- 父级需要能够更改标题和文本，而无需强制 `Collapsible` 组件重新渲染。 Qwik 需要能够在不影响 `Collapsible` 组件的情况下将更改重新分发到 `MyApp` 模板。
+- 子组件需要更改投影的内容，而无需重新渲染父组件。在我们的例子中，`Collapsible` 应该能够 隐藏/显示 默认的 `q:slot` 而无需下载和重新渲染 `MyApp` 组件。
 
-In order for the two components to have an independent lifecycle, the projection needs to be declarative. In this way, either the parent or child can change what is projected or how it is projected without re-rendering the other.
+为了使这两个组件具有独立的生命周期，projection需要是声明性的。
+通过这种方式，父母或孩子可以更改投递的内容或投递方式，而无需重新渲染对方。
 
-With `children` approach, the component can imperatively modify the `children` in endless ways. This would make it extremely difficult to build a framework that would not force re-rendering both parent and children.
+使用 `children` 方法，组件可以以无穷无尽的方式强制修改 `children`。
+这将使得构建一个不会强制重新渲染父组件和子组件的框架变得极其困难。
