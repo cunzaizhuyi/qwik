@@ -4,11 +4,11 @@ contributors:
   - adamdbradley
 ---
 
-# Adaptors and Middleware
+# Adaptors 和 Middleware
 
-Qwik City middleware is a glue code that connects server rendering framework (such as Cloudflare, Netlify, Express etc.) with the Qwik City meta-framework.
+Qwik City 中间件是 将服务器渲染框架（如 Cloudflare、Netlify、Express 等）与 Qwik City 元框架连接起来的 胶水代码。
 
-Qwik City comes pre-bundle with:
+Qwik City 预捆绑：
 
 - [cloudflare-pages](../cloudflare-pages/index.mdx)
 - [netlify-edge](../netlify-edge/index.mdx)
@@ -16,13 +16,13 @@ Qwik City comes pre-bundle with:
 
 ## Build
 
-Use Qwik City vite cli `--ssr` to specify the SSR entry
+使用Qwik City vite cli `--ssr` 指定SSR入口。
 
 ```bash
 vite build --ssr src/entry.MIDDLEWARE.ts
 ```
 
-default output directory is `./server` and it is configurable by setting `qwikVite` plugin option
+默认输出目录是 `./server` 并且可以通过设置 qwikVite 插件选项来配置。
 
 ```typescript
 // file vite.config.ts
@@ -42,8 +42,10 @@ export default defineConfig(() => {
 });
 ```
 
-## Advanced
+## 高级
 
-The `requestHandler()` utility is what each of the above middleware bundles uses in order to translate their request/response to a standard format for Qwik City to use. This function can be used to provide middleware for specific server frameworks.
+`requestHandler()` 功能是上述每个中间件捆绑包使用的，以便将它们的请求/响应转换为 Qwik City 使用的标准格式。
+该功能可用于为特定的服务器框架提供中间件。
 
-If there's middleware missing and you'd like it added, take a look at how the `requestHandler()` utility is used to handle requests for each of the middleware source-code above. Better yet, we'd love to have your middleware contributions! [PR's are welcome](https://github.com/BuilderIO/qwik/tree/main/packages/qwik-city/middleware)!
+如果缺少中间件并且您希望添加它，请查看上述每个中间件源代码 了解`requestHandler()`功能如何处理请求。当然更好的是，我们很乐意收到您的中间件贡献！
+[欢迎 PR](https://github.com/BuilderIO/qwik/tree/main/packages/qwik-city/middleware)!
