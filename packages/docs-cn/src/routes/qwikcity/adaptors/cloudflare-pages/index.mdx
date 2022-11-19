@@ -4,17 +4,17 @@ contributors:
   - adamdbradley
 ---
 
-# Cloudflare Pages Middleware
+# Cloudflare Pages 中间件
 
-You have to integrate cloudflare-pages using this command to see your files as the files below
+您必须使用此命令集成 cloudflare-pages 才能看到您的文件，如下:
 
 ```bash
 npm run qwik add cloudflare-pages
 ```
 
-Qwik City Cloudflare Pages middleware allows you to connect Qwik City to [Cloudflare Pages](https://pages.cloudflare.com/).
+Qwik City Cloudflare Pages 中间件允许您将 Qwik City 连接到 [Cloudflare Pages](https://pages.cloudflare.com/)。
 
-Below is an example of using the built-in middleware within a user's app.
+下面是在用户app中使用内置中间件的示例。
 
 ```typescript
 // entry.cloudflare-pages.tsx
@@ -24,7 +24,7 @@ import { qwikCity } from '@builder.io/qwik-city/middleware/cloudflare-pages';
 export const onRequest = qwikCity(render);
 ```
 
-The compiled middleware can then be used anywhere in the cloudflare pages `/functions` directory.
+然后可以在 cloudflare 页面的`/functions`目录中的任何位置使用编译后的中间件。
 
 ```typescript
 // export the compiled middleware where cloudflare pages can find it.
