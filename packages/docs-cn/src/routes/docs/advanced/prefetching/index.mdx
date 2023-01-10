@@ -6,27 +6,39 @@ contributors:
   - manucorporat
 ---
 
-# Prefetching
+# 预取（Prefetching）
 
-Prefetching is a way for applications to begin downloading modules in a background task, before the user may actually require these modules. The ideal solution is to only prefetch the smallest amount of code that is highly likely to be executed from a user's interaction, but avoiding any JavaScript that's _couldn't_ be used.
+预取是应用程序在用户实际需要这些模块之前开始在后台任务中下载模块的一种方式。
+理想的解决方案是仅预取极有可能从用户交互中执行的最少量代码，而避免预取任何不会使用到的 JavaScript。
 
-Only downloading and executing a minimal amount of JavaScript is an area where Qwik applications excel. And since Qwik is able to understand how individual components are used (and what's not used), it can also best decide which bundles should be prefetched.
+只下载和执行最少量的 JavaScript 是 Qwik应用擅长的领域。
+由于 Qwik 能够理解单个组件的使用方式（以及未使用的组件），它还可以最好地决定应该预取哪些bundles。
 
-Remember, the [difference between resumability and hydration](../../concepts/resumable/index.mdx), is that resumability allows Qwik applications to avoid executing JavaScript just to restore the event listeners, component tree, and application state. By fundamentally breaking apart a component's event listeners, render function, and state, the amount of code to prefetch is also significantly smaller than from a traditional approach.
+请记住，[resumability 和 hydration 之间的区别](../../concepts/resumable/index.mdx) 是，
+resumability 允许 Qwik 应用程序避免执行 JavaScript 来恢复事件侦听器、组件树和应用程序状态。
+通过从根本上拆分组件的事件侦听器、渲染函数和状态，预取的代码量也比传统方法明显减少。
+
 
 ## Collecting Used Symbols
 
-When Qwik renders an app, it's able to collect which "symbols" were used during the render. A symbol includes various parts of a component, which are [extracted by the optimizer](../optimizer/index.mdx) in order to break apart the application. Individual event listeners, component state, and the component renderer itself are examples of different symbols that could be extracted.
+当 Qwik 渲染应用程序时，它能够收集在渲染过程中使用了哪些“symbols”。
+symbols包括组件的各个部分，[优化器提取](../optimizer/index.mdx) 出这些部分以分解应用程序。
+通常会被组件提取出 单独的事件侦听器、组件状态和组件渲染器本身 几个部分。
 
-For example, a product page may have a click listener on the "Add to cart" button, and when this button is clicked, the user should immediately get feedback to show the product added to the cart. In this example, the Qwik optimizer would be able to understand that the only symbol a user could interact with is the "Add to cart" button click event listener.
+例如，一个产品页面可能在“添加到购物车”按钮上有一个点击监听器，当点击这个按钮时，用户应该立即得到反馈以显示该产品已添加到购物车中。
+在此示例中，Qwik optimizer将能够理解用户需要交互的唯一symbol是“添加到购物车”按钮的click事件侦听器。
 
-For our "Add to cart" example, the optimizer would collect the symbols for only the click event listener, and the renderer for the add to cart widget. It would not, however, have to download, hydrate, and re-render any of the other parts of the application, since it's not even possible to re-render other sections of the page.
+对于我们的“添加到购物车”示例，optimizer将仅收集click事件侦听器的symbol，以及添加到购物车这部分UI的渲染器。
+但是，它不必下载、hydrate和重新渲染应用程序的任何其他部分，因为甚至不可能重新渲染页面的其他部分。
 
-Since Qwik understand what's possible, it's able to prefetch the code only for the event listener rather than all the JavaScript for the entire application or route. This is in contrast to the traditional approach, where prefetching is used to load the entire application or route, and framework code, just in order for the application to add the click event listener.
+由于 Qwik 了解什么是可能的，它能够只为事件侦听器预取代码，而不是为整个应用程序或路由预取所有 JavaScript。
+这与传统方法相反，在传统方法中，只是为了让应用程序添加点击事件侦听器，就要预取用于加载整个应用程序或路由以及框架的代码。
 
-## Prefetching Strategy
+## 预取策略
 
-The prefetching strategy is the logic which decides which JavaScript, if any, Qwik should prefetch in the background. By default, Qwik will prefetch any visible listeners on the page. To configure the prefetching strategy, use the options argument of the `renderToStream()` function, often found in the `src/entry.ssr.tsx` source file. Providing optimal prefetching strategies is an area Qwik will continue to research and experiment with.
+预取策略是决定 Qwik 应该在后台预取哪些 JavaScript（如果有）的逻辑。
+默认情况下，Qwik 会预取页面上所有可见的监听器。要配置预取策略，请使用 `renderToStream()` 函数的 options 参数，
+通常在 `src/entry.ssr.tsx` 源文件中找到。提供最佳预取策略是 Qwik 将继续研究和试验的领域。
 
 ```ts
 export default function (opts: RenderToStreamOptions) {
@@ -40,9 +52,11 @@ export default function (opts: RenderToStreamOptions) {
 }
 ```
 
-## Prefetching Implementation
+## 预取实现
 
-Browsers offer numerous ways to "implement", or apply, a [prefetching strategy](#prefetching-strategy), and Qwik can be configured to prefer one implementation over another, each with their pros and cons. Depending on the configuration, the generated HTML content will include the prefetch implementation.
+浏览器提供了多种“实现”或应用[预取策略]（#prefetching-strategy）的方法，
+Qwik 可以配置为某种实现方式，每种方式各有利弊。
+根据配置，生成的 HTML 内容将包括预取实现。
 
 ```ts
 export default function (opts: RenderToStreamOptions) {
@@ -58,7 +72,7 @@ export default function (opts: RenderToStreamOptions) {
 }
 ```
 
-| Option              | Description                                                                                                                                                                                                                                                                                                 |
+| 选项              | 描述                                                                                                                                                                                                                                                                                                 |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `prefetchEvent`     | Dispatch a `qprefetch` event with detailed data containing the urls that should be prefetched. The event dispatch script will be inlined into the document's HTML.                                                                                                                                            |
 | `linkInsert`        | Insert the `<link>` element into the document. When using `html-append`, it will render each `<link>` directly within the html, appended at the end of the body. Using the `js-append` option, it will instead insert some JavaScript, which creates the elements at runtime and appends them at the end of the body. |
@@ -67,9 +81,14 @@ export default function (opts: RenderToStreamOptions) {
 
 ### Request/Response Cache and Service Workers
 
-The preferred caching strategy used by [Qwik City](../../../qwikcity/prefetching/overview/index.mdx), is to use a Service Worker to populate the browser's [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache). Qwik itself should be configured to use the `prefetchEvent` implementation, which will dispatch a `qprefetch` event. Next, Qwik City will listen for this event and communicate with its service worker to persist the Request / Response object pairs so they are cached in long-lived memory.
+The preferred caching strategy used by [Qwik City](../../../qwikcity/prefetching/overview/index.mdx),
+is to use a Service Worker to populate the browser's [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache).
+Qwik itself should be configured to use the `prefetchEvent` implementation, which will dispatch a `qprefetch` event.
+Next, Qwik City will listen for this event and
+communicate with its service worker to persist the Request / Response object pairs so they are cached in long-lived memory.
 
-By using a service worker to intercept fetch requests from the browser, this approach allows fine-grain caching control, along with preventing multiple-requests for the resource.
+By using a service worker to intercept fetch requests from the browser,
+this approach allows fine-grain caching control, along with preventing multiple-requests for the resource.
 
 ### Link `rel`
 
